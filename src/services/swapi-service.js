@@ -1,6 +1,6 @@
 export default class SwapiService {
 
-  _apiBase = 'https://swapi.co/api';
+  _apiBase = 'https://swapi.tech/api';
 
   async getResource(url) {
     const res = await fetch(`${this._apiBase}${url}`);
@@ -17,8 +17,10 @@ export default class SwapiService {
     return res.results;
   }
 
-  getPerson(id) {
-    return this.getResource(`/people/${id}/`);
+  async getPerson(id) {
+    const res = await this.getResource(`/people/${id}/`);
+    console.log(res.result.properties);
+    return res.result.properties;
   }
 
   async getAllPlanets() {
@@ -26,8 +28,10 @@ export default class SwapiService {
     return res.results;
   }
 
-  getPlanet(id) {
-    return this.getResource(`/planets/${id}/`);
+  async getPlanet(id) {
+    const res = await this.getResource(`/planets/${id}/`);
+    console.log(res.result.properties);
+    return res.result.properties;
   }
 
   async getAllStarships() {
@@ -35,7 +39,21 @@ export default class SwapiService {
     return res.results;
   }
 
-  getStarship(id) {
-    return this.getResource(`/starships/${id}/`);
+  async getStarship(id) {
+    const res = await this.getResource(`/starships/${id}/`);
+    console.log(res.result.properties);
+    return res.result.properties;
   }
+
+  _transformPlanet(planet) {
+    return {
+        id,
+        name: planet.name,
+        population: planet.population,
+        rotationPeriod: planet.rotation_period,
+        diameter: planet.diameter
+    }
+  }
+
+
 }
