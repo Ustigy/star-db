@@ -18,9 +18,8 @@ export default class SwapiService {
   }
 
   async getPerson(id) {
-    const res = await this.getResource(`/people/${id}/`);
-    console.log(res.result.properties);
-    return res.result.properties;
+    const person = await this.getResource(`/people/${id}/`);
+    return this._transformPerson(person.result.properties);
   }
 
   async getAllPlanets() {
@@ -29,9 +28,8 @@ export default class SwapiService {
   }
 
   async getPlanet(id) {
-    const res = await this.getResource(`/planets/${id}/`);
-    console.log(res.result.properties);
-    return res.result.properties;
+    const planet = await this.getResource(`/planets/${id}/`);
+    return this._transformPlanet(planet.result.properties);
   }
 
   async getAllStarships() {
@@ -40,14 +38,18 @@ export default class SwapiService {
   }
 
   async getStarship(id) {
-    const res = await this.getResource(`/starships/${id}/`);
-    console.log(res.result.properties);
-    return res.result.properties;
+    const starship = await this.getResource(`/starships/${id}/`);
+    return this._transformStarship(starship.result.properties);
+  }
+
+  _extractId(item) {
+    const idRegExp = /\/(\d+)$/;
+    return item.url.match(idRegExp)[1];
   }
 
   _transformPlanet(planet) {
     return {
-        id,
+        id : this._extractId(planet),
         name: planet.name,
         population: planet.population,
         rotationPeriod: planet.rotation_period,
@@ -55,5 +57,27 @@ export default class SwapiService {
     }
   }
 
+  _transformStarship(starship) {
+    return {
+        id : this._extractId(starship),
+        name: starship.name,
+        model: starship.model,
+        manufacturer: starship.manufacturer,
+        costInCredit: starship.costInCredit,
+        length: starship.crew,
+        passengers: starship.passengers,
+        cargoCapacity: starship.cargoCapacity
+    }
+  }
+
+  _transformPerson(person) {
+    return {
+        id : this._extractId(person),
+        name: person.name,
+        gender: person.gender,
+        birthYear: person.birthYear,
+        eyeColor: person.eyeColor
+    }
+  }
 
 }
