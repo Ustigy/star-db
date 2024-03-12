@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 
 import './person-details.css';
 import SwapiService from '../../services/swapi-service';
+import Spinner from '../spinner';
 
 export default class PersonDetails extends Component {
 
   swapiService = new SwapiService();
 
   state = {
-    person: null
+    person: null,
+    loading: false
   };
 
   componentDidMount() {
@@ -17,6 +19,10 @@ export default class PersonDetails extends Component {
 
   componentDidUpdate(prevProps) {
     if(this.props.personId !== prevProps.personId) {
+      this.setState({
+        loading: true
+      });
+
       this.updatePerson();
     }
   }
@@ -31,7 +37,8 @@ export default class PersonDetails extends Component {
       .getPerson(personId)
       .then((person) => {
         this.setState({
-          person
+          person,
+          loading: false
         });
       });
   };
@@ -49,10 +56,10 @@ export default class PersonDetails extends Component {
     const { id, name, gender, 
             birthYear, eyeColor } = this.state.person;
 
-    return (
-      <div className="person-details card">
+    const content = (
+      <>
         <img className="person-image"
-          src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`} />
+        src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`} />
 
         <div className="card-body">
           <h4>{name}</h4>
@@ -71,6 +78,12 @@ export default class PersonDetails extends Component {
             </li>
           </ul>
         </div>
+      </>
+    );
+
+    return (
+      <div className="person-details card">
+        {this.state.loading ? <Spinner /> : content}
       </div>
     )
   }
